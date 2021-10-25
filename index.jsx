@@ -1,78 +1,85 @@
-import React, { Component } from 'react'
-import "whatwg-fetch"
+import React from "react";
+import "whatwg-fetch";
 import "./index.css"
 
-export default class Login extends Component {
+export default class Sign extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { name: "", password: "" };
+    this.state = { userName: "", password1: "", password2: "" };
 
     this.changeName = this.changeName.bind(this);
-    this.changePasw = this.changePasw.bind(this);
-    this.login = this.login.bind(this);
-    this.cancle = this.cancle.bind(this);
+    this.changePassword1 = this.changePassword1.bind(this);
+    this.changePassword2 = this.changePassword2.bind(this);
+    this.sign = this.sign.bind(this);
   }
 
   changeName(e) {
-    this.setState({ name: e.target.value });
+    this.setState({ userName: e.target.value });
     e.preventDefault();
   }
 
-  changePasw(e) {
-    this.setState({ password: e.target.value });
+  changePassword1(e) {
+    this.setState({ password1: e.target.value });
     e.preventDefault();
   }
 
-  login() {
-    if (this.state.name === "") {
-      alert("用户名不能为空");
-    } else if (this.state.password === "") {
-      alert("密码不能为空");
+  changePassword2(e) {
+    this.setState({ password2: e.target.value });
+    e.preventDefault();
+  }
+
+  sign() {
+    const { password1 } = this.state;
+    const { password2 } = this.state;
+    if (password1 !== password2) {
+      alert("两次密码不同");
     } else {
       fetch("url", {
-        method: "get",
+        method: "post",
         headers: {
-          userName: this.state.name
+          userName: this.state.userName,
+          password: this.state.password1
         }
-      })
-        .then((res) => {
-          res.json().then((data) => {
+      }).then((res) => {
+        res
+          .json()
+          .then((data) => {
             console.log(data);
+          })
+          .then((err) => {
+            console.log(err);
           });
-        })
-        .then((err) => {
-          console.log(err);
-        });
+      });
     }
-  }
-
-  cancle() {
-    this.setState({ name: "", password: "" });
   }
 
   render() {
     return (
-      <div className="Login">
-        <h3>
-          用户名：
+      <div>
+        <h3 className="Sign">
+          账号：
           <input
             type="text"
-            value={this.state.name}
+            value={this.state.userName}
             onChange={this.changeName}
           ></input>
-        </h3>
-        <h3>
-          密&nbsp;&nbsp;&nbsp;码：
+          <br />
+          密码：
           <input
             type="password"
-            value={this.state.password}
-            onChange={this.changePasw}
+            value={this.state.password1}
+            onChange={this.changePassword1}
           ></input>
+          <br />
+          确认密码：
+          <input
+            type="password"
+            value={this.state.password2}
+            onChange={this.changePassword2}
+          ></input>
+          <br />
+          <input type="button" value="注册" onClick={this.sign}></input>
         </h3>
-        <br />
-        <button onClick={this.login}>登录</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button onClick={this.cancle}>取消</button>
       </div>
     );
   }
